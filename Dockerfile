@@ -1,21 +1,19 @@
-FROM python:3.12-alpine AS python-poetry-build-base
+FROM python:3.12-alpine AS python-base
 
 ENV PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
     PIP_DEFAULT_TIMEOUT=100 \
-    POETRY_VERSION=2.4.1 \
-    POETRY_HOME="/opt/poetry" \
-    VIRTUAL_ENV="/opt/pysetup/venv" \
     PYTHONCACHEPREFIX=/tmp/ArtmapOnineCache
+
+FROM python-base AS python-poetry-build-base
+
+ENV POETRY_VERSION=2.4.1 \
+    POETRY_HOME="/opt/poetry" \
+    VIRTUAL_ENV="/opt/pysetup/venv"
 
 RUN APKG_UPDATE=1 \
     && apk add --no-cache --virtual .build-deps \
-        build-base \
         curl \
-        git \
-        libffi-dev \
-        openssl-dev \
-        python3-dev \
         py3-pip
 
 RUN python -m venv $VIRTUAL_ENV
@@ -23,6 +21,21 @@ ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 
 RUN curl -sSL https://install.python-poetry.org | python3 -
 ENV PATH="$POETRY_HOME/bin:$PATH"
+
+RUN poetry self add poetry-plugin-export
+
+FROM python-poetry-build-base AS python-poetry-export
+
+# export requirements.txt for pip install
+WORKDIR /opt/poetry-export
+
+COPY api/poetry.lock api/pyproject.toml ./
+RUN poetry export -f requirements.txt --output requirements-build.txt --without-hashes
+
+RUN python -m venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
+RUN pip install --no-cache-dir -r requirements-build.txt
+
 
 # Vite build
 FROM node:24-alpine AS vite-build-base
@@ -34,26 +47,21 @@ FROM vite-build-base AS vite-build
 COPY frontend/ /frontend/
 RUN npm run build
 
-FROM python-poetry-build-base AS builder-base
+FROM python-base AS artmaponline
 
-COPY api/poetry.lock api/pyproject.toml ./
-RUN poetry install
+ENV PATH="/opt/venv/bin:$PATH"
 
 RUN addgroup -g 10001 -S appgroup && \
     adduser -u 10001 -S -D -H -G appgroup appuser
-
-FROM builder-base AS artmaponline
 
 WORKDIR /opt/artmaponline
 
 USER appuser
 
 COPY --chown=appuser:appgroup api/ .
+COPY --chown=appuser:appgroup --from=python-poetry-export /opt/venv /opt/venv
 COPY --chown=appuser:appgroup --from=vite-build /frontend/build/client ./static
 
-ENV FLASK_APP=app.py \
-    FLASK_RUN_HOST=0.0.0.0 \
-    FLASK_RUN_PORT=8000 \
-    FLASK_DEBUG=0
+ENV HOME=/tmp
 
-CMD ["flask", "run"]
+CMD ["gunicorn", "app:app"]

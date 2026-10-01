@@ -1,0 +1,5 @@
+services:
+  artmaponline:
+    image: ghcr.io/thatguyjustin/artmaponline:latest
+    ports:
+      - 8000:8000

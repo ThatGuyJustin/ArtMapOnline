@@ -1,5 +1,6 @@
-frontend/.react-router
-frontend/build
-frontend/node_modules
+frontend/.react-router/
+frontend/build/
+frontend/node_modules/
 api/.poetry
 README.md
+**/__pycache__/

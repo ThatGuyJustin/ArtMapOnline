@@ -5,6 +5,16 @@ ENV PYTHONUNBUFFERED=1 \
     PIP_DEFAULT_TIMEOUT=100 \
     PYTHONCACHEPREFIX=/tmp/ArtmapOnineCache
 
+# Vite build
+FROM node:24-alpine AS vite-build-base
+COPY frontend/package.json frontend/package-lock.json /frontend/
+WORKDIR /frontend
+RUN npm ci
+
+FROM vite-build-base AS vite-build
+COPY frontend/ /frontend/
+RUN npm run build
+
 FROM python-base AS python-poetry-build-base
 
 ENV POETRY_VERSION=2.4.1 \
@@ -13,8 +23,8 @@ ENV POETRY_VERSION=2.4.1 \
 
 RUN APKG_UPDATE=1 \
     && apk add --no-cache --virtual .build-deps \
-        curl \
-        py3-pip
+    curl \
+    py3-pip
 
 RUN python -m venv $VIRTUAL_ENV
 ENV PATH="$VIRTUAL_ENV/bin:$PATH"
@@ -36,17 +46,6 @@ RUN python -m venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
 RUN pip install --no-cache-dir -r requirements-build.txt
 
-
-# Vite build
-FROM node:24-alpine AS vite-build-base
-COPY frontend/package.json frontend/package-lock.json /frontend/
-WORKDIR /frontend
-RUN npm ci
-
-FROM vite-build-base AS vite-build
-COPY frontend/ /frontend/
-RUN npm run build
-
 FROM python-base AS artmaponline
 
 ENV PATH="/opt/venv/bin:$PATH"
@@ -63,5 +62,8 @@ COPY --chown=appuser:appgroup --from=python-poetry-export /opt/venv /opt/venv
 COPY --chown=appuser:appgroup --from=vite-build /frontend/build/client ./static
 
 ENV HOME=/tmp
+
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+    CMD curl -f http://localhost:8000/api/hello-world || exit 1
 
 CMD ["gunicorn", "app:app"]

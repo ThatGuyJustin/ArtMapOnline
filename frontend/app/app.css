@@ -1,0 +1,27 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif,
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+}
+
+@font-face {
+  font-family: 'Monocraft';
+  src: url('/assets/fonts/Monocraft.ttc') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+.font-monocraft {
+  font-family: 'Monocraft', monospace;
+}
+
+html,
+body {
+  /*@apply bg-white dark:bg-gray-950;*/
+
+  @media (prefers-color-scheme: dark) {
+    color-scheme: dark;
+  }
+}

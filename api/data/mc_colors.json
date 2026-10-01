@@ -1,0 +1,431 @@
+{
+  "colors": [
+    {
+      "id": 1,
+      "name": "Grass",
+      "hex": "#7FB238",
+      "material": "GRASS",
+      "asset_url": "/assets/materials/short_grass.png"
+    },
+    {
+      "id": 2,
+      "name": "Cream",
+      "hex": "#F7E9A3",
+      "material": "PUMPKIN_SEEDS",
+      "asset_url": "/assets/materials/pumpkin_seeds.png"
+    },
+    {
+      "id": 3,
+      "name": "Light Gray",
+      "hex": "#C7C7C7",
+      "material": "COBWEB",
+      "asset_url": "/assets/materials/cobweb.png"
+    },
+    {
+      "id": 4,
+      "name": "Red",
+      "hex": "#FF0000",
+      "material": "RED_DYE",
+      "asset_url": "/assets/materials/red_dye.png"
+    },
+    {
+      "id": 5,
+      "name": "Ice",
+      "hex": "#A0A0FF",
+      "material": "ICE",
+      "asset_url": "/assets/materials/ice.png"
+    },
+    {
+      "id": 6,
+      "name": "Silver",
+      "hex": "#A7A7A7",
+      "material": "LIGHT_GRAY_DYE",
+      "asset_url": "/assets/materials/light_gray_dye.png"
+    },
+    {
+      "id": 7,
+      "name": "Leaves",
+      "hex": "#007C00",
+      "material": "OAK_LEAVES",
+      "asset_url": "/assets/materials/oak_leaves.png"
+    },
+    {
+      "id": 8,
+      "name": "Snow",
+      "hex": "#FFFFFF",
+      "material": "SNOW",
+      "asset_url": "/assets/materials/snow.png"
+    },
+    {
+      "id": 9,
+      "name": "Gray",
+      "hex": "#A4A8B8",
+      "material": "GRAY_DYE",
+      "asset_url": "/assets/materials/gray_dye.png"
+    },
+    {
+      "id": 10,
+      "name": "Coffee",
+      "hex": "#976D4D",
+      "material": "MELON_SEEDS",
+      "asset_url": "/assets/materials/melon_seeds.png"
+    },
+    {
+      "id": 11,
+      "name": "Stone",
+      "hex": "#707070",
+      "material": "GHAST_TEAR",
+      "asset_url": "/assets/materials/ghast_tear.png"
+    },
+    {
+      "id": 12,
+      "name": "Water",
+      "hex": "#4040FF",
+      "material": "LAPIS_BLOCK",
+      "asset_url": "/assets/materials/lapis_block.png"
+    },
+    {
+      "id": 13,
+      "name": "Dark Wood",
+      "hex": "#8F7748",
+      "material": "DARK_OAK_LOG",
+      "asset_url": "/assets/materials/dark_oak_log.png"
+    },
+    {
+      "id": 14,
+      "name": "White",
+      "hex": "#FFFCF5",
+      "material": "BONE_MEAL",
+      "asset_url": "/assets/materials/bone_meal.png"
+    },
+    {
+      "id": 15,
+      "name": "Orange",
+      "hex": "#D87F33",
+      "material": "ORANGE_DYE",
+      "asset_url": "/assets/materials/orange_dye.png"
+    },
+    {
+      "id": 16,
+      "name": "Magenta",
+      "hex": "#B24CD8",
+      "material": "MAGENTA_DYE",
+      "asset_url": "/assets/materials/magenta_dye.png"
+    },
+    {
+      "id": 17,
+      "name": "Light Blue",
+      "hex": "#6699D8",
+      "material": "LIGHT_BLUE_DYE",
+      "asset_url": "/assets/materials/light_blue_dye.png"
+    },
+    {
+      "id": 18,
+      "name": "Yellow",
+      "hex": "#E5E533",
+      "material": "YELLOW_DYE",
+      "asset_url": "/assets/materials/yellow_dye.png"
+    },
+    {
+      "id": 19,
+      "name": "Lime",
+      "hex": "#7FCC19",
+      "material": "LIME_DYE",
+      "asset_url": "/assets/materials/lime_dye.png"
+    },
+    {
+      "id": 20,
+      "name": "Pink",
+      "hex": "#F27FA5",
+      "material": "PINK_DYE",
+      "asset_url": "/assets/materials/pink_dye.png"
+    },
+    {
+      "id": 21,
+      "name": "Graphite",
+      "hex": "#4C4C4C",
+      "material": "FLINT",
+      "asset_url": "/assets/materials/flint.png"
+    },
+    {
+      "id": 22,
+      "name": "Gunpowder",
+      "hex": "#999999",
+      "material": "GUNPOWDER",
+      "asset_url": "/assets/materials/gunpowder.png"
+    },
+    {
+      "id": 23,
+      "name": "Cyan",
+      "hex": "#4C7F99",
+      "material": "CYAN_DYE",
+      "asset_url": "/assets/materials/cyan_dye.png"
+    },
+    {
+      "id": 24,
+      "name": "Purple",
+      "hex": "#7F3FB2",
+      "material": "PURPLE_DYE",
+      "asset_url": "/assets/materials/purple_dye.png"
+    },
+    {
+      "id": 25,
+      "name": "Blue",
+      "hex": "#334CB2",
+      "material": "LAPIS_LAZULI",
+      "asset_url": "/assets/materials/lapis_lazuli.png"
+    },
+    {
+      "id": 26,
+      "name": "Brown",
+      "hex": "#664C33",
+      "material": "COCOA_BEANS",
+      "asset_url": "/assets/materials/cocoa_beans.png"
+    },
+    {
+      "id": 27,
+      "name": "Green",
+      "hex": "#667F33",
+      "material": "GREEN_DYE",
+      "asset_url": "/assets/materials/green_dye.png"
+    },
+    {
+      "id": 28,
+      "name": "Brick",
+      "hex": "#993333",
+      "material": "BRICK",
+      "asset_url": "/assets/materials/brick.png"
+    },
+    {
+      "id": 29,
+      "name": "Black",
+      "hex": "#191919",
+      "material": "INK_SAC",
+      "asset_url": "/assets/materials/ink_sac.png"
+    },
+    {
+      "id": 30,
+      "name": "Gold",
+      "hex": "#FAEE4D",
+      "material": "GOLD_NUGGET",
+      "asset_url": "/assets/materials/gold_nugget.png"
+    },
+    {
+      "id": 31,
+      "name": "Aqua",
+      "hex": "#5CDBD5",
+      "material": "PRISMARINE_CRYSTALS",
+      "asset_url": "/assets/materials/prismarine_crystals.png"
+    },
+    {
+      "id": 32,
+      "name": "Lapis",
+      "hex": "#4A80FF",
+      "material": "LAPIS_ORE",
+      "asset_url": "/assets/materials/lapis_ore.png"
+    },
+    {
+      "id": 33,
+      "name": "Emerald",
+      "hex": "#00D93A",
+      "material": "EMERALD",
+      "asset_url": "/assets/materials/emerald.png"
+    },
+    {
+      "id": 34,
+      "name": "Light Wood",
+      "hex": "#815631",
+      "material": "BIRCH_WOOD",
+      "asset_url": "/assets/materials/birch_wood.png"
+    },
+    {
+      "id": 35,
+      "name": "Maroon",
+      "hex": "#700200",
+      "material": "NETHER_WART",
+      "asset_url": "/assets/materials/nether_wart.png"
+    },
+    {
+      "id": 36,
+      "name": "White Terracotta",
+      "hex": "#D1B1A1",
+      "material": "EGG",
+      "asset_url": "/assets/materials/egg.png"
+    },
+    {
+      "id": 37,
+      "name": "Orange Terracotta",
+      "hex": "#9F5224",
+      "material": "MAGMA_CREAM",
+      "asset_url": "/assets/materials/magma_cream.png"
+    },
+    {
+      "id": 38,
+      "name": "Magenta Terracotta",
+      "hex": "#95576C",
+      "material": "BEETROOT",
+      "asset_url": "/assets/materials/beetroot.png"
+    },
+    {
+      "id": 39,
+      "name": "Light Blue Terracotta",
+      "hex": "#706C8A",
+      "material": "MYCELIUM",
+      "asset_url": "/assets/materials/mycelium.png"
+    },
+    {
+      "id": 40,
+      "name": "Yellow Terracotta",
+      "hex": "#BA8524",
+      "material": "GLOWSTONE_DUST",
+      "asset_url": "/assets/materials/glowstone_dust.png"
+    },
+    {
+      "id": 41,
+      "name": "Lime Terracotta",
+      "hex": "#677535",
+      "material": "SLIME_BALL",
+      "asset_url": "/assets/materials/slime_ball.png"
+    },
+    {
+      "id": 42,
+      "name": "Pink Terracotta",
+      "hex": "#A04D4E",
+      "material": "SPIDER_EYE",
+      "asset_url": "/assets/materials/spider_eye.png"
+    },
+    {
+      "id": 43,
+      "name": "Gray Terracotta",
+      "hex": "#392923",
+      "material": "SOUL_SAND",
+      "asset_url": "/assets/materials/soul_sand.png"
+    },
+    {
+      "id": 44,
+      "name": "Light Gray Terracotta",
+      "hex": "#876B62",
+      "material": "BROWN_MUSHROOM",
+      "asset_url": "/assets/materials/brown_mushroom.png"
+    },
+    {
+      "id": 45,
+      "name": "Cyan Terracotta",
+      "hex": "#575C5C",
+      "material": "IRON_NUGGET",
+      "asset_url": "/assets/materials/iron_nugget.png"
+    },
+    {
+      "id": 46,
+      "name": "Purple Terracotta",
+      "hex": "#7A4958",
+      "material": "CHORUS_FRUIT",
+      "asset_url": "/assets/materials/chorus_fruit.png"
+    },
+    {
+      "id": 47,
+      "name": "Blue Terracotta",
+      "hex": "#4C3E5C",
+      "material": "PURPUR_BLOCK",
+      "asset_url": "/assets/materials/purpur_block.png"
+    },
+    {
+      "id": 48,
+      "name": "Brown Terracotta",
+      "hex": "#4C3223",
+      "material": "PODZOL",
+      "asset_url": "/assets/materials/podzol.png"
+    },
+    {
+      "id": 49,
+      "name": "Green Terracotta",
+      "hex": "#4C522A",
+      "material": "POISONOUS_POTATO",
+      "asset_url": "/assets/materials/poisonous_potato.png"
+    },
+    {
+      "id": 50,
+      "name": "Red Terracotta",
+      "hex": "#8E3C2E",
+      "material": "APPLE",
+      "asset_url": "/assets/materials/apple.png"
+    },
+    {
+      "id": 51,
+      "name": "Black Terracotta",
+      "hex": "#251610",
+      "material": "CHARCOAL",
+      "asset_url": "/assets/materials/charcoal.png"
+    },
+    {
+      "id": 52,
+      "name": "Crimson Nylium",
+      "hex": "#BD3031",
+      "material": "CRIMSON_NYLIUM",
+      "asset_url": "/assets/materials/crimson_nylium.png"
+    },
+    {
+      "id": 53,
+      "name": "Crimson Stem",
+      "hex": "#303F61",
+      "material": "CRIMSON_STEM",
+      "asset_url": "/assets/materials/crimson_stem.png"
+    },
+    {
+      "id": 54,
+      "name": "Crimson Hyphae",
+      "hex": "#5C191D",
+      "material": "CRIMSON_HYPHAE",
+      "asset_url": "/assets/materials/crimson_hyphae.png"
+    },
+    {
+      "id": 55,
+      "name": "Warpned Nylium",
+      "hex": "#167E86",
+      "material": "WARPED_NYLIUM",
+      "asset_url": "/assets/materials/warped_nylium.png"
+    },
+    {
+      "id": 56,
+      "name": "Warped Stem",
+      "hex": "#3A8E8C",
+      "material": "WARPED_STEM",
+      "asset_url": "/assets/materials/warped_stem.png"
+    },
+    {
+      "id": 57,
+      "name": "Warped Hyphae",
+      "hex": "#562C3E",
+      "material": "WARPED_HYPHAE",
+      "asset_url": "/assets/materials/warped_hyphae.png"
+    },
+    {
+      "id": 58,
+      "name": "Warped Wart Block",
+      "hex": "#14B485",
+      "material": "WARPED_WART_BLOCK",
+      "asset_url": "/assets/materials/warped_wart_block.png"
+    },
+    {
+      "id": 59,
+      "name": "Deepslate",
+      "hex": "#646464",
+      "material": "COBBLED_DEEPSLATE",
+      "asset_url": "/assets/materials/cobbled_deepslate.png"
+    },
+    {
+      "id": 60,
+      "name": "Raw Iron",
+      "hex": "#D8AF93",
+      "material": "RAW_IRON",
+      "asset_url": "/assets/materials/raw_iron.png"
+    },
+    {
+      "id": 61,
+      "name": "Glow Lichen",
+      "hex": "#7FA796",
+      "material": "GLOW_LICHEN",
+      "asset_url": "/assets/materials/glow_lichen.png"
+    }
+  ]
+}

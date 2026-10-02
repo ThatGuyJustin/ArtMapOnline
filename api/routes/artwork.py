@@ -3,7 +3,7 @@ from flask import Blueprint, request, current_app
 
 from util.colors import get_global_color_tally, get_chunk_color_tally
 from util.files import allowed_file, generate_filename
-from util.images import convert_image_to_mc_colors, overlay_grid
+from util.images import convert_image_to_mc_colors, overlay_grid, convert_image_to_mc_colors_2
 
 artwork = Blueprint('artwork', __name__)
 
@@ -73,7 +73,7 @@ def convert():
 
     img = Image.open(file)
 
-    converted_image, num_grid = convert_image_to_mc_colors(img, cols, rows)
+    converted_image, num_grid = convert_image_to_mc_colors_2(img, cols, rows)
     overlay_image = overlay_grid(converted_image, scale=10)
     color_counts = get_global_color_tally(num_grid)
 

@@ -14,3 +14,10 @@ ToDo:
 1) Docker build
 2) Cleanup the images
 3) Timed tasks to clean out memory cache, or just figure out a better cache in general.
+
+# Example Docker file
+`docker/compose.example.yml`
+
+# Live enviroment
+`docker compose -f docker/compose.live.yml up --build`
+`docker compose -f docker/compose.live.yml down --rmi all`

@@ -1,0 +1,33 @@
+name: ArtMapOnline-live
+services:
+  traefik:
+    container_name: artmaponline-traefik
+    image: traefik:v3.7
+    command:
+      - --entrypoints.web.address=:80
+      - --providers.file.filename=/etc/traefik/dynamic.yml
+      - --providers.file.watch=true
+      - --accesslog=true
+    volumes:
+      - ./src/traefik:/etc/traefik:ro
+    ports:
+      - "8000:80"
+  frontend:
+    container_name: artmaponline-frontend
+    command: ["npm", "run", "dev", "--", "--config", "vite.docker.config.ts"]
+    environment:
+      CHOKIDAR_USEPOLLING: "true"
+      CHOKIDAR_INTERVAL: "1000"
+    build:
+      context: ..
+      dockerfile: docker/src/frontend.Dockerfile
+    volumes:
+      - ../frontend:/opt/artmaponline/
+      - ./src/vite.docker.config.ts:/opt/artmaponline/vite.docker.config.ts:ro
+  backend:
+    container_name: artmaponline-backend
+    build:
+      context: ..
+      dockerfile: docker/src/backend.Dockerfile
+    volumes:
+      - ../api:/opt/artmaponline/

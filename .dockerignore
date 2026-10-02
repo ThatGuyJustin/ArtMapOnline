@@ -4,3 +4,4 @@ frontend/node_modules/
 api/.poetry
 README.md
 **/__pycache__/
+docker/

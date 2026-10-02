@@ -18,9 +18,11 @@ app.register_blueprint(api, url_prefix='/api')
 app.register_blueprint(artwork, url_prefix='/api/artwork')
 app.register_blueprint(media, url_prefix='/api/media')
 
+
 @app.route('/')
 def serve_index():
     return send_from_directory(app.static_folder, 'index.html')
+
 
 @app.route('/<path:path>')
 def serve_static_or_spa(path):
@@ -29,5 +31,12 @@ def serve_static_or_spa(path):
 
     return send_from_directory(app.static_folder, 'index.html')
 
+
 if __name__ == '__main__':
-    app.run()
+    app.run(
+        host=os.environ.get('FLASK_RUN_HOST', '0.0.0.0'),
+        port=int(os.environ.get('FLASK_RUN_PORT', '8000')),
+        use_reloader=True,
+        reloader_type='stat',
+        reloader_interval=1,
+    )

@@ -4,7 +4,7 @@ from io import BytesIO
 
 from flask import Blueprint, send_file, current_app, request
 
-from util.images import generate_blueprint_chunk
+from util.images import generate_blueprint_chunk, upscale_and_overlay_grid
 
 media = Blueprint("media", __name__)
 
@@ -21,7 +21,7 @@ def get_converted_image(media_hash):
     if "grid" in request.args:
         cached_media["overlay_image"].save(converted_image, format="PNG")
     else:
-        cached_media["image_preview"].save(converted_image, format="PNG")
+        upscale_and_overlay_grid(cached_media["image_preview"], 10, grid=False).save(converted_image, format="PNG")
 
     converted_image.seek(0)
 

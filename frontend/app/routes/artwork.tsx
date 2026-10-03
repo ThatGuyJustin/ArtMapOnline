@@ -21,6 +21,7 @@ export default function Artwork({ loaderData }: Route.ComponentProps) {
     const [selectedChunk, setSelectedChunk] = useState(null);
     const [toggleGrid, setToggleGrid] = useState(true);
     const [toggleNumbers, setToggleNumbers] = useState(false);
+    const [hideUnusedColors, setHideUnusedColors] = useState(false);
 
     const [viewingChunk, setViewingChunk] = useState(null);
     const [colorCounts, setColorCounts] = useState({});
@@ -90,6 +91,14 @@ export default function Artwork({ loaderData }: Route.ComponentProps) {
                         {viewingChunk !== null ? `Chunk (${viewingChunk.col}, ${viewingChunk.row}) Colors` : 'Total Colors'}
                     </Typography>
 
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                        <FormControlLabel
+                            control={<Switch checked={hideUnusedColors} onChange={(e) => setHideUnusedColors(e.target.checked)} size="small" />}
+                            label={<Typography sx={{ fontFamily: 'Monocraft, monospace', fontSize: '0.75rem', color: 'white' }}>Hide Unused Colors</Typography>}
+                            sx={{ m: 0 }}
+                        />
+                    </Box>
+
                     <Stack
                         spacing={1.5}
                         sx={{
@@ -100,6 +109,7 @@ export default function Artwork({ loaderData }: Route.ComponentProps) {
                     >
                         {Object.entries(loaderData.colors).map(([id, color]) => {
                             const qty = colorCounts[id] || 0;
+                            if(hideUnusedColors && qty == 0) return;
                             const isActive = qty > 0;
 
                             return (

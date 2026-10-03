@@ -1,9 +1,11 @@
+import json
+
 from PIL import Image
 from flask import Blueprint, request, current_app
 
 from util.colors import get_global_color_tally, get_chunk_color_tally
 from util.files import allowed_file, generate_filename
-from util.images import convert_image_to_mc_colors, overlay_grid, convert_image_to_mc_colors_2
+from util.images import convert_image_to_mc_colors, upscale_and_overlay_grid
 
 artwork = Blueprint('artwork', __name__)
 
@@ -73,8 +75,10 @@ def convert():
 
     img = Image.open(file)
 
-    converted_image, num_grid = convert_image_to_mc_colors_2(img, cols, rows)
-    overlay_image = overlay_grid(converted_image, scale=10)
+    use_dither = request.form.get('use_dither', None) and request.form.get('use_dither') == 'true'
+
+    converted_image, num_grid = convert_image_to_mc_colors(img, cols, rows, use_dithering=use_dither)
+    overlay_image = upscale_and_overlay_grid(converted_image, scale=10)
     color_counts = get_global_color_tally(num_grid)
 
     current_app.CACHE[file_hash] = {'image_preview': converted_image, 'num_grid': num_grid, 'color_counts': color_counts, 'overlay_image': overlay_image, 'ext': file_ext, 'rows': rows, 'cols': cols}

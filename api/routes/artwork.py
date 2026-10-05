@@ -27,6 +27,7 @@ def get_artwork(artwork_id):
             "target_rows": _artwork['rows'],
             "target_columns": _artwork['cols'],
             "color_counts": _artwork['color_counts'],
+            "dither": _artwork['dither'],
         }
     }, 200
 
@@ -69,18 +70,18 @@ def convert():
     cols = int(request.form.get('target_columns', 1))
     rows = int(request.form.get('target_rows', 1))
 
+    use_dither = request.form.get('use_dither', None) and request.form.get('use_dither') == 'true'
+
     if file_hash in current_app.CACHE:
-        if current_app.CACHE[file_hash]['rows'] == rows and current_app.CACHE[file_hash]['cols'] == cols:
+        if current_app.CACHE[file_hash]['rows'] == rows and current_app.CACHE[file_hash]['cols'] == cols and current_app.CACHE[file_hash]['dither'] == use_dither:
             return {"code": 200, "message": "File already converted", "data": {"file_hash": file_hash}}, 200
 
     img = Image.open(file)
-
-    use_dither = request.form.get('use_dither', None) and request.form.get('use_dither') == 'true'
 
     converted_image, num_grid = convert_image_to_mc_colors(img, cols, rows, use_dithering=use_dither)
     overlay_image = upscale_and_overlay_grid(converted_image, scale=10)
     color_counts = get_global_color_tally(num_grid)
 
-    current_app.CACHE[file_hash] = {'image_preview': converted_image, 'num_grid': num_grid, 'color_counts': color_counts, 'overlay_image': overlay_image, 'ext': file_ext, 'rows': rows, 'cols': cols}
+    current_app.CACHE[file_hash] = {'image_preview': converted_image, 'num_grid': num_grid, 'color_counts': color_counts, 'overlay_image': overlay_image, 'ext': file_ext, 'rows': rows, 'cols': cols, 'dither': use_dither}
 
     return {"code": 200, "message": "File is now converting", "data": {"file_hash": file_hash, "ext": file_ext}}, 200

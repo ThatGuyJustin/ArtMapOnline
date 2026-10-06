@@ -2,6 +2,7 @@ import os
 import sys
 
 from flask import Flask, send_from_directory
+from redis import ConnectionPool, Redis
 
 from routes.api import api
 from routes.artwork import artwork
@@ -9,10 +10,15 @@ from routes.media import media
 from util.colors import setup_colors
 
 app = Flask(__name__, static_folder='static')
+redis_pool = ConnectionPool.from_url(
+    url=os.environ.get('REDIS_URI', 'redis://redis:6379/0?health_check_interval=2&protocol=3'), max_connections=20, decode_responses=False)
 
 with app.app_context():
-    app.CACHE = getattr(sys.modules['builtins'], 'GLOBAL_SHARED_CACHE', {})
     app.color_map = setup_colors()
+    app.redis_client = Redis(connection_pool=redis_pool)
+    app.expire_time = 60 * 60 * 24 * 7
+    app.cache_time = 60 * 15
+
 
 app.register_blueprint(api, url_prefix='/api')
 app.register_blueprint(artwork, url_prefix='/api/artwork')

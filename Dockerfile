@@ -24,6 +24,7 @@ ENV POETRY_VERSION=2.4.1 \
 RUN APKG_UPDATE=1 \
     && apk add --no-cache --virtual .build-deps \
     curl \
+    g++ \
     py3-pip
 
 RUN python -m venv $VIRTUAL_ENV

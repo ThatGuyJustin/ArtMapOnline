@@ -30,7 +30,7 @@ export default function Artwork({ loaderData }: Route.ComponentProps) {
         const fetchCounts = async () => {
             try {
                 if (viewingChunk !== null) {
-                    const res = await axios.get(`/api/artwork/${loaderData.artInfo.artwork_id}/counts/${viewingChunk.row}/${viewingChunk.col}`);
+                    const res = await axios.get(`/api/artwork/${loaderData.artInfo.pk}/counts/${viewingChunk.row}/${viewingChunk.col}`);
                     setColorCounts(res.data.data.color_counts);
                 } else {
                     setColorCounts(loaderData.artInfo.color_counts);
@@ -42,7 +42,7 @@ export default function Artwork({ loaderData }: Route.ComponentProps) {
         };
 
         fetchCounts();
-    }, [viewingChunk, loaderData.artInfo.artwork_id]);
+    }, [viewingChunk, loaderData.artInfo.pk]);
 
     return (
         <Box
@@ -248,13 +248,13 @@ export default function Artwork({ loaderData }: Route.ComponentProps) {
                                 // Forces the wrapper to scale up while maintaining ratio
                                 height: '100%',
                                 maxWidth: '100%',
-                                aspectRatio: `${loaderData.artInfo.target_columns} / ${loaderData.artInfo.target_rows}`,
+                                aspectRatio: `${loaderData.artInfo.cols} / ${loaderData.artInfo.rows}`,
                                 margin: 'auto'
                             }}
                         >
                             <Box
                                 component="img"
-                                src={`/api/media/converted/${loaderData.artInfo.artwork_id}`}
+                                src={`/api/media/converted/${loaderData.artInfo.pk}`}
                                 alt="Converted Map Preview"
                                 sx={{
                                     width: '100%',
@@ -271,11 +271,11 @@ export default function Artwork({ loaderData }: Route.ComponentProps) {
                                     position: 'absolute',
                                     top: 0, left: 0, right: 0, bottom: 0,
                                     display: 'grid',
-                                    gridTemplateColumns: `repeat(${loaderData.artInfo.target_columns}, 1fr)`,
-                                    gridTemplateRows: `repeat(${loaderData.artInfo.target_rows}, 1fr)`
+                                    gridTemplateColumns: `repeat(${loaderData.artInfo.cols}, 1fr)`,
+                                    gridTemplateRows: `repeat(${loaderData.artInfo.rows}, 1fr)`
                                 }}
                             >
-                                {Array.from({ length: loaderData.artInfo.target_rows * loaderData.artInfo.target_columns }).map((_, index) => {
+                                {Array.from({ length: loaderData.artInfo.rows * loaderData.artInfo.cols }).map((_, index) => {
                                     const isSelected = selectedChunk === index;
                                     const showNumber = toggleNumbers || isSelected;
 
@@ -285,7 +285,7 @@ export default function Artwork({ loaderData }: Route.ComponentProps) {
                                             onMouseEnter={() => setSelectedChunk(index)}
                                             onMouseLeave={() => setSelectedChunk(null)}
                                             onClick={() => {
-                                                const cols = loaderData.artInfo.target_columns;
+                                                const cols = loaderData.artInfo.cols;
                                                 const row = Math.floor(index / cols);
                                                 const col = index % cols;
 
@@ -367,7 +367,7 @@ export default function Artwork({ loaderData }: Route.ComponentProps) {
                                 <Box sx={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 0 }}>
                                     <Box
                                         component="img"
-                                        src={`/api/media/chunk/${loaderData.artInfo.artwork_id}/${viewingChunk.row}/${viewingChunk.col}?numbers=${toggleNumbers}&grid=${toggleGrid}`}
+                                        src={`/api/media/chunk/${loaderData.artInfo.pk}/${viewingChunk.row}/${viewingChunk.col}?numbers=${toggleNumbers}&grid=${toggleGrid}`}
                                         alt={`Map ${viewingChunk.index + 1}`}
                                         sx={{
                                             maxWidth: '100%',

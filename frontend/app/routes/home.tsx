@@ -34,7 +34,7 @@ export default function Home() {
         try {
             const file = files[0];
             const r = await postUnconvertedImage(file, rows, columns, useDither);
-            navigate(`/artwork/${r.data.data.file_hash}`);
+            navigate(`/artwork/${r.data.data.art_id}`);
         } catch (error) {
             console.error("Upload failed:", error);
         } finally {

@@ -294,4 +294,7 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
 
+# Docker bind mounted data (If using it)
+docker/data
+
 

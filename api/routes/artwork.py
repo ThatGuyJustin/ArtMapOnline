@@ -1,8 +1,12 @@
+import datetime
 import json
+from io import BytesIO
 
 from PIL import Image
 from flask import Blueprint, request, current_app
+from redis_om import NotFoundError
 
+from models.Artmap import ArtMap
 from util.colors import get_global_color_tally, get_chunk_color_tally
 from util.files import allowed_file, generate_filename
 from util.images import convert_image_to_mc_colors, upscale_and_overlay_grid
@@ -14,21 +18,15 @@ def get_artwork(artwork_id):
     if not artwork_id:
         return { "code": 400, "message": "Missing artwork id." }, 400
 
-    if artwork_id not in current_app.CACHE:
+    try:
+        db_art = ArtMap.get(artwork_id)
+    except NotFoundError:
         return { "code": 400, "message": "Artwork not found." }, 400
-
-    _artwork = current_app.CACHE[artwork_id]
 
     return {
         "code": 200,
         "message": "Artwork found",
-        "data": {
-            "artwork_id": artwork_id,
-            "target_rows": _artwork['rows'],
-            "target_columns": _artwork['cols'],
-            "color_counts": _artwork['color_counts'],
-            "dither": _artwork['dither'],
-        }
+        "data": db_art.model_dump(mode="json", exclude={'uploaded_by', 'num_grid'})
     }, 200
 
 @artwork.get("/<artwork_id>/counts/<row>/<col>")
@@ -36,12 +34,12 @@ def get_artwork_counts(artwork_id, row, col):
     if not artwork_id:
         return { "code": 400, "message": "Missing artwork id." }, 400
 
-    if artwork_id not in current_app.CACHE:
-        return { "code": 400, "message": "Artwork not found." }, 400
+    try:
+        db_art = ArtMap.get(artwork_id)
+    except NotFoundError:
+        return {"code": 400, "message": "Artwork not found."}, 400
 
-    _artwork = current_app.CACHE[artwork_id]
-
-    chunk_count = get_chunk_color_tally(_artwork['num_grid'], int(row), int(col))
+    chunk_count = get_chunk_color_tally(db_art.num_grid, int(row), int(col))
 
     return {
         "code": 200,
@@ -72,16 +70,35 @@ def convert():
 
     use_dither = request.form.get('use_dither', None) and request.form.get('use_dither') == 'true'
 
-    if file_hash in current_app.CACHE:
-        if current_app.CACHE[file_hash]['rows'] == rows and current_app.CACHE[file_hash]['cols'] == cols and current_app.CACHE[file_hash]['dither'] == use_dither:
-            return {"code": 200, "message": "File already converted", "data": {"file_hash": file_hash}}, 200
+    # TODO: Replace with grabbing from redis, and updating to match the size and settings
+    # if file_hash in current_app.CACHE:
+    #     if current_app.CACHE[file_hash]['rows'] == rows and current_app.CACHE[file_hash]['cols'] == cols and current_app.CACHE[file_hash]['dither'] == use_dither:
+    #         return {"code": 200, "message": "File already converted", "data": {"file_hash": file_hash}}, 200
 
     img = Image.open(file)
+    original_image_bytes = BytesIO()
+    img.save(original_image_bytes, format='PNG')
+    raw_original_image = original_image_bytes.getvalue()
+    current_app.redis_client.setex(f"original_image:{file_hash}", current_app.expire_time, raw_original_image)
 
     converted_image, num_grid = convert_image_to_mc_colors(img, cols, rows, use_dithering=use_dither)
-    overlay_image = upscale_and_overlay_grid(converted_image, scale=10)
     color_counts = get_global_color_tally(num_grid)
 
-    current_app.CACHE[file_hash] = {'image_preview': converted_image, 'num_grid': num_grid, 'color_counts': color_counts, 'overlay_image': overlay_image, 'ext': file_ext, 'rows': rows, 'cols': cols, 'dither': use_dither}
+    preview_image_bytes = BytesIO()
+    converted_image.save(preview_image_bytes, format='PNG')
+    raw_preview_image = preview_image_bytes.getvalue()
+    current_app.redis_client.setex(f"preview_image:{file_hash}", current_app.expire_time, raw_preview_image)
 
-    return {"code": 200, "message": "File is now converting", "data": {"file_hash": file_hash, "ext": file_ext}}, 200
+    artmap = ArtMap(original_image=file_hash,
+                    rows=rows,
+                    cols=cols,
+                    use_dither=use_dither,
+                    created_at=datetime.datetime.now(),
+                    uploaded_by=request.remote_addr,
+                    num_grid=num_grid,
+                    color_counts=color_counts)
+
+    artmap.save()
+    artmap.expire(current_app.expire_time)
+
+    return {"code": 200, "message": "File is now converting", "data": {"art_id": artmap.pk}}, 200

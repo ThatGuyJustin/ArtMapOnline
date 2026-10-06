@@ -2,47 +2,66 @@ import json
 import mimetypes
 from io import BytesIO
 
+from PIL import Image
 from flask import Blueprint, send_file, current_app, request
+from redis_om import NotFoundError
 
+from models.Artmap import ArtMap
 from util.images import generate_blueprint_chunk, upscale_and_overlay_grid
 
 media = Blueprint("media", __name__)
 
-@media.get("/converted/<media_hash>")
-def get_converted_image(media_hash):
+@media.get("/converted/<artmap>")
+def get_converted_image(artmap):
+    try:
+        db_art = ArtMap.get(artmap)
+    except NotFoundError:
+        return "Art not found", 404
 
-    if media_hash not in current_app.CACHE:
-        return "Media hash not found", 400
+    if current_app.redis_client.exists(f"preview_image_scaled:{db_art.original_image}"):
+        return send_file(BytesIO(current_app.redis_client.get(f"preview_image_scaled:{db_art.original_image}")), download_name=f"{db_art.original_image}_converted.png", as_attachment=False, mimetype=mimetypes.guess_type(f"{db_art.original_image}_converted.png")[0]), 200
 
-    cached_media = current_app.CACHE[media_hash]
+    og_preview_image = Image.open(BytesIO(current_app.redis_client.get(f"preview_image:{db_art.original_image}")))
+    upscale_preview = BytesIO()
+    upscale_and_overlay_grid(og_preview_image, 10, grid=False).save(upscale_preview, format="PNG")
 
-    converted_image = BytesIO()
+    upscale_preview.seek(0)
 
-    if "grid" in request.args:
-        cached_media["overlay_image"].save(converted_image, format="PNG")
-    else:
-        upscale_and_overlay_grid(cached_media["image_preview"], 10, grid=False).save(converted_image, format="PNG")
+    current_app.redis_client.setex(f"preview_image_scaled:{db_art.original_image}", current_app.cache_time, upscale_preview.getvalue())
+    upscale_preview.seek(0)
 
-    converted_image.seek(0)
+    return send_file(upscale_preview, download_name=f"{db_art.original_image}_converted.png", as_attachment=False, mimetype=mimetypes.guess_type(f"{db_art.original_image}_converted.png")[0]), 200
 
-    return send_file(converted_image, download_name=media_hash + ".png", as_attachment=False, mimetype=mimetypes.guess_type(media_hash + ".png")[0])
-
-@media.get("/chunk/<media_hash>/<row>/<col>")
-def get_chunk(media_hash, row, col):
-    if media_hash not in current_app.CACHE:
-        return "Media hash not found", 400
-
-    cached_media = current_app.CACHE[media_hash]
-
-    chunk_image = BytesIO()
+@media.get("/chunk/<artmap>/<row>/<col>")
+def get_chunk(artmap, row, col):
+    try:
+        db_art = ArtMap.get(artmap)
+    except NotFoundError:
+        return "Art not found", 404
 
     grid = request.args.get("grid", type=json.loads)
     numbers = request.args.get("numbers", type=json.loads)
 
-    grid_image = generate_blueprint_chunk(cached_media["image_preview"], cached_media["num_grid"], int(col), int(row), grid=grid, numbers=numbers)
+    check_key = f"chunk_image{'_grid' if grid else ''}{'_numbers' if numbers else ''}:{db_art.pk}:{row}_{col}"
+
+    if current_app.redis_client.exists(check_key):
+        return send_file(BytesIO(current_app.redis_client.get(check_key)),
+                         download_name=f"{db_art.pk}_{row}_{col}.png", as_attachment=False,
+                         mimetype=mimetypes.guess_type(f"{db_art.pk}_{row}_{col}.png")[0]), 200
+
+    chunk_image = BytesIO()
+
+    retrieved_bytes = current_app.redis_client.get(f"preview_image:{db_art.original_image}")
+    og_preview_image = Image.open(BytesIO(retrieved_bytes))
+
+    grid_image = generate_blueprint_chunk(og_preview_image, db_art.num_grid, int(col), int(row), grid=grid, numbers=numbers)
     grid_image.save(chunk_image, format="PNG")
 
     chunk_image.seek(0)
 
-    return send_file(chunk_image, download_name=media_hash + f"_{row}_{col}.png", as_attachment=False,
-                     mimetype=mimetypes.guess_type(media_hash + f"_{row}_{col}.png")[0])
+    current_app.redis_client.setex(check_key, current_app.cache_time,
+                                   chunk_image.getvalue())
+    chunk_image.seek(0)
+
+    return send_file(chunk_image, download_name=f"{db_art.pk}_{row}_{col}.png", as_attachment=False,
+                     mimetype=mimetypes.guess_type(f"{db_art.pk}_{row}_{col}.png")[0])

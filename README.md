@@ -20,13 +20,19 @@ This is a *almost* full stack application that takes any image and converts it t
 ## ToDo
 - [x] Docker build
 - [x] Cleanup the images 
-- [ ] Move to redis cache
+- [x] Move to redis cache
 - [ ] Allow for setting changes in the frontend
   - Canvas size, dithering change etc.
 
 
 ## Running
 When building, it builds the frontend into an [SPA](https://developer.mozilla.org/en-US/docs/Glossary/SPA), which is then served by flask.
+
+### Environment Variables
+
+| Variable | Description | Default |
+|---|---|---|
+|`REDIS_URI`| [Connection URI for Redis](https://redis.readthedocs.io/en/stable/examples/connection_examples.html#Connecting-to-Redis-instances-by-specifying-a-URL-scheme.) | `redis://redis:6379/0?health_check_interval=2&protocol=3` |
 
 ### Production
 #### Docker Compose

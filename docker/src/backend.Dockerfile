@@ -10,6 +10,7 @@ ENV PYTHONUNBUFFERED=1 \
 
 RUN APKG_UPDATE=1 \
     && apk add --no-cache --virtual .build-deps \
+    g++ \
     curl \
     py3-pip
 

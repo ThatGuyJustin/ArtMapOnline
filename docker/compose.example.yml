@@ -1,5 +1,35 @@
 services:
   artmaponline:
     image: ghcr.io/thatguyjustin/artmaponline:latest
+    environment:
+      REDIS_URI: redis://redis:6379/0?health_check_interval=2&protocol=3
+      REDIS_OM_URL: redis://redis:6379/0?health_check_interval=2&protocol=3
     ports:
       - "8000:8000"
+    depends_on:
+      - redis
+
+  redis_insight:
+    image: redis/redisinsight:latest
+    container_name: redis_insight
+    ports:
+      - "5540:5540"
+    volumes:
+#      - redis_insight_data:/data    # Docker Volume
+      - ./data/redis_insight_data:/data  # Bind Mount
+    depends_on:
+      - redis
+
+  redis:
+    image: redis:alpine
+    container_name: redis
+    command: redis-server --save 60 1
+    ports:
+      - "6379:6379"
+    volumes:
+#      - redis_data:/data    # Docker Volume
+      - ./data/redis_data:/data  # Bind Mount
+
+#volumes:
+#  redis_data:
+#  redis_insight_data:

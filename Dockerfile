@@ -5,6 +5,9 @@ ENV PYTHONUNBUFFERED=1 \
     PIP_DEFAULT_TIMEOUT=100 \
     PYTHONCACHEPREFIX=/tmp/ArtmapOnineCache
 
+RUN APKG_UPDATE=1 \
+    && apk add --no-cache curl
+
 # Vite build
 FROM node:24-alpine AS vite-build-base
 COPY frontend/package.json frontend/package-lock.json /frontend/
@@ -23,7 +26,6 @@ ENV POETRY_VERSION=2.4.1 \
 
 RUN APKG_UPDATE=1 \
     && apk add --no-cache --virtual .build-deps \
-    curl \
     g++ \
     py3-pip
 
